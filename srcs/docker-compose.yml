@@ -34,12 +34,20 @@ services:
         - WP_DB_ADMIN=${WP_DB_ADMIN}
         - WP_DB_ADMIN_PASSWORD=${WP_DB_ADMIN_PASSWORD}
         - WP_DB_HOST=${WP_DB_HOST}
+    environment:
+      WP_CONFIG_EXTRA: |+
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', 6379);
+        define('WP_REDIS_TIMEOUT', 1);
+        define('WP_REDIS_READ_TIMEOUT', 1);
     env_file:
       - .env
     ports:
       - "9000:9000"
     volumes:
       - www:/var/www
+    depends_on:
+      - mariadb
     networks:
       - frontend
       - backend
@@ -64,8 +72,6 @@ services:
       - "3306:3306"
     volumes:
       - db:/var/db
-    depends_on:
-      - wordpress
     networks:
       - backend
     restart: always
