@@ -9,17 +9,17 @@ VOLUMES_DIR = $(HOME)/data
 
 all: prune up
 	@ $(NAME)
-
+# for up without cache --force-recreate
 $(NAME): prune
 	@ sudo mkdir -p ${VOLUMES_DIR}/www
 	@ sudo mkdir -p ${VOLUMES_DIR}/db
-	@ docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build --force-recreate
+	@ docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
 
 # docker-compose rm -f
 up:
 	@ sudo mkdir -p ${VOLUMES_DIR}/www
 	@ sudo mkdir -p ${VOLUMES_DIR}/db
-	@ docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build --force-recreate
+	@ docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
 
 ps:
 	@ docker compose -f $(DOCKER_COMPOSE_FILE) ps

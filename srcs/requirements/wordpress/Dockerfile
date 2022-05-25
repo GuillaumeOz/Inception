@@ -25,14 +25,17 @@ RUN         apt-get -y install curl
 # install mariadb-client.
 RUN         apt-get -y install mariadb-client
 # RUN			apt-get -y install mariadb-server
+# skip-grant-tables
+# install vim debug purpose
+RUN         apt-get -y install vim
 
 # Install PHP and extensions.
-RUN         apt-get -y install php7.3-fpm
+RUN         apt-get -y install php7.3-fpm php7.3-mysqli
 
 # Php config
 COPY        conf/php-fpm.conf /etc/php/7.3/fpm/php-fpm.conf
 COPY        conf/yolo.conf /etc/php/7.3/fpm/yolo.conf
-# COPY        conf/php.ini /etc/php7/conf.d/custom.ini
+# COPY        conf/php.ini /etc/php/7.3/fpm/conf.d/custom.ini
 RUN         mkdir -p /run/php/
 
 # Users config
@@ -90,16 +93,21 @@ RUN         chmod +x wp-cli.phar
 RUN         mv wp-cli.phar /usr/local/bin/wp
 RUN         chown -R www:www /usr/local/bin/wp
 
-
-
 # #Install Worpress via Worpress-cli
 WORKDIR     /var/www/
+RUN         rm -rf /var/www/wp-config.php
 RUN         wp core download --allow-root
-RUN         wp config create --dbname=mariadb --dbuser=${WP_DB_ADMIN} --dbpass=${WP_DB_ADMIN_PASSWORD} --dbhost=${WP_DB_HOST} --dbcharset=utf8 --path=/var/www/ --allow-root --skip-check
+RUN         wp config create --dbname=${WP_DB_NAME} --dbuser=${WP_DB_ADMIN} --dbpass=${WP_DB_ADMIN_PASSWORD} --dbhost=mariadb --dbcharset=utf8 --path=/var/www/ --allow-root --skip-check
+# RUN         wp core install --url=${DOMAIN_NAME} --title=${PROJECT_NAME} --admin_name=${WP_DB_ADMIN} --admin_password=${WP_DB_ADMIN_PASSWORD} --admin_email=${WP_ADMIN_EMAIL} --skip-email --allow-root
+# RUN         wp --path=/var/www core config --dbhost=${WP_DB_HOST} --dbname=mariadb --dbuser=${WP_DB_ADMIN} --dbpass=${WP_DB_ADMIN_PASSWORD} --allow-root
 
-# RUN             wp --path=/var/www core config --dbhost=${WP_DB_HOST} --dbname=mariadb --dbuser=${WP_DB_ADMIN} --dbpass=${WP_DB_ADMIN_PASSWORD} --allow-root
+WORKDIR     /
 
-WORKDIR         /
+# Warning: mysqli_real_connect(): (HY000/1130): Host 'wordpress.srcs_backend' is not allowed to connect to this MariaDB server in /var/www/wp-includes/wp-db.php on line 1753
+# Host 'wordpress.srcs_backend' is not allowed to connect to this MariaDB server
+
+# Error establishing a database connection
+
 
 
 # RUN             wp core config --dbname=wordpress --dbuser=gozsertt --dbpass=gozserttpass --dbhost=3306:3306 --dbprefix=wp_ --allow-root
