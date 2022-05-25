@@ -1,0 +1,87 @@
+version: "3"
+
+services:
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    build:
+      dockerfile: Dockerfile
+      context: ./requirements/nginx/
+      args:
+        - DOMAIN_NAME=${DOMAIN_NAME}
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes_from:
+      - wordpress
+    networks:
+      - frontend
+    depends_on:
+      - wordpress
+    restart: always
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress
+    build:
+      dockerfile: Dockerfile
+      context: ./requirements/wordpress
+      args:
+        - WP_DB_NAME=${WP_DB_NAME}
+        - WP_DB_ADMIN=${WP_DB_ADMIN}
+        - WP_DB_ADMIN_PASSWORD=${WP_DB_ADMIN_PASSWORD}
+        - WP_DB_HOST=${WP_DB_HOST}
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+    volumes:
+      - www:/var/www
+    networks:
+      - frontend
+      - backend
+    tty: true
+    restart: always
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    build:
+      dockerfile: Dockerfile
+      context: ./requirements/mariadb
+      args:
+        - MYSQL_DB_NAME=${MYSQL_DB_NAME}
+        - MYSQL_DB_ADMIN=${MYSQL_DB_ADMIN}
+        - MYSQL_DB_ADMIN_PASSWORD=${MYSQL_DB_ADMIN_PASSWORD}
+        - MYSQL_DB_USER=${MYSQL_DB_USER}
+        - MYSQL_DB_PASSWORD=${MYSQL_DB_PASSWORD}
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - db:/var/db
+    depends_on:
+      - wordpress
+    networks:
+      - backend
+    restart: always
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db:
+    driver_opts:
+      type: none
+      o: bind
+      device: "$HOME/data/db"
+  www:
+    driver_opts:
+      type: none
+      o: bind
+      device: "$HOME/data/www"

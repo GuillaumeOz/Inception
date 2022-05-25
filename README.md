@@ -1,2 +1,8 @@
 # Inception
-Docker-Compose implementation, which contain LEMP Stack with WordPress, and some awesome other plugins.
+Inception is a project that asks you to run Docker-Compose. This is a tool for defining and running container Docker applications.
+
+
+      #  /home/gozsertt/data
+      #  /home/gozsertt/data
+      #  /home/gozsertt/data
+      # - redis
