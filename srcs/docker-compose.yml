@@ -34,12 +34,6 @@ services:
         - WP_DB_ADMIN=${WP_DB_ADMIN}
         - WP_DB_ADMIN_PASSWORD=${WP_DB_ADMIN_PASSWORD}
         - WP_DB_HOST=${WP_DB_HOST}
-    environment:
-      WP_CONFIG_EXTRA: |+
-        define('WP_REDIS_HOST', 'redis');
-        define('WP_REDIS_PORT', 6379);
-        define('WP_REDIS_TIMEOUT', 1);
-        define('WP_REDIS_READ_TIMEOUT', 1);
     env_file:
       - .env
     ports:
@@ -52,6 +46,7 @@ services:
       - frontend
       - backend
     tty: true
+    command: bash -c "/tools/entrypoint.sh && exec bash"
     restart: always
 
   mariadb:

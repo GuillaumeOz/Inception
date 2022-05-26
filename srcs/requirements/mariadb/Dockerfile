@@ -33,15 +33,6 @@ RUN		service mysql start	&& \
 		echo "CREATE USER '$MYSQL_DB_ADMIN'@'%' IDENTIFIED BY '$MYSQL_DB_ADMIN_PASSWORD';" | mysql -u root && \
 		echo "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_DB_ADMIN'@'%';" | mysql -u root && \
 		echo "FLUSH PRIVILEGES;" | mysql -u root
-		# > /bootstrap.sql
-		# mysql $MYSQL_DB_NAME -u root < /var/www/wordpress/$MYSQL_DB_NAME.sql
-
-
-# mysql --host=mariadb --user gozsertt -pgozserttpass
-
-# Restart mysql service
-# RUN service mysql stop \
-#     && service mysql start
 
 # Expose the port 3306
 EXPOSE		3306

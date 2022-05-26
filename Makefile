@@ -8,30 +8,28 @@ VOLUMES_DIR = $(HOME)/data
 #docker compose --env-file ./config/.env.dev config 
 
 all: prune up
-	@ $(NAME)
+	$(NAME)
 # for up without cache --force-recreate
 $(NAME): prune
-	@ sudo mkdir -p ${VOLUMES_DIR}/www
-	@ sudo mkdir -p ${VOLUMES_DIR}/db
-	@ docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
+	sudo mkdir -p ${VOLUMES_DIR}/www
+	sudo mkdir -p ${VOLUMES_DIR}/db
+	docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
 
 # docker-compose rm -f
 up:
-	@ sudo mkdir -p ${VOLUMES_DIR}/www
-	@ sudo mkdir -p ${VOLUMES_DIR}/db
-	@ docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
+	sudo mkdir -p ${VOLUMES_DIR}/www
+	sudo mkdir -p ${VOLUMES_DIR}/db
+	docker compose -f $(DOCKER_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
 
 ps:
 	@ docker compose -f $(DOCKER_COMPOSE_FILE) ps
 
-# docker logs --tail 50 --follow --timestamps nginx
 logs:
 	@ docker compose -f $(DOCKER_COMPOSE_FILE) logs
 
 down:
 	@ docker compose -f $(DOCKER_COMPOSE_FILE) down -v
 
-#@ docker-compose rm -f
 prune: down
 	@ docker system prune -f
 
